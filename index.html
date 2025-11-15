@@ -20,6 +20,16 @@
       letter-spacing: 2px;
       position: relative;
     }
+    .logo-fixed {
+      position: absolute;
+      left: 20px;
+      top: 10px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid white;
+    }
     .coin-counter{
       position: absolute;
       right: 20px;
@@ -68,18 +78,32 @@
   </style>
 </head>
 <body>
+
   <header>
+    <img src="./assets/logo.png" class="logo-fixed" alt="Logo">
     FitKid
     <div class="coin-counter" id="coinCounter">MuscleCoin: 0</div>
   </header>
 
   <div class="container">
-    <!-- Logo / Avatar -->
+
+    <!-- Mascota Virtual -->
     <div class="card">
-      <h2>Logo de la Aplicación</h2>
-      <img id="avatarPreview" src="https://via.placeholder.com/120" alt="Logo" style="width:120px;height:120px;border-radius:16px;display:block;margin-bottom:10px;" />
-      <input type="file" id="avatarInput" accept="image/*" />
-      <button id="deleteAvatar">Eliminar avatar</button>
+      <h2>Mascota Virtual</h2>
+      <div id="petContainer">
+        <img id="petImg" src="./assets/pet.png" alt="Mascota" />
+        <img id="clothes_tshirt" src="./assets/clothes_tshirt.png" style="display:none" alt="Polera" />
+        <img id="clothes_jacket" src="./assets/clothes_jacket.png" style="display:none" alt="Chaqueta" />
+        <img id="clothes_cape" src="./assets/clothes_cape.png" style="display:none" alt="Capa" />
+      </div>
+
+      <label for="clothesSelect">Elige vestimenta:</label>
+      <select id="clothesSelect">
+        <option value="">Sin ropa</option>
+        <option value="tshirt">Polera</option>
+        <option value="jacket">Chaqueta</option>
+        <option value="cape">Capa</option>
+      </select>
     </div>
 
     <!-- Misiones -->
@@ -109,74 +133,32 @@
 
     </div>
 
-    <!-- Mascota Virtual -->
-    <div class="card">
-      <h2>Mascota Virtual</h2>
-      <div id="petContainer">
-        <img id="petImg" src="./assets/pet.png" alt="Mascota" />
-        <!-- capas de ropa -->
-        <img id="clothes_tshirt" src="./assets/clothes_tshirt.png" style="display:none" alt="Polera" />
-        <img id="clothes_jacket" src="./assets/clothes_jacket.png" style="display:none" alt="Chaqueta" />
-        <img id="clothes_cape" src="./assets/clothes_cape.png" style="display:none" alt="Capa" />
-      </div>
-
-      <label for="clothesSelect">Elige vestimenta:</label>
-      <select id="clothesSelect">
-        <option value="">Sin ropa</option>
-        <option value="tshirt">Polera</option>
-        <option value="jacket">Chaqueta</option>
-        <option value="cape">Capa</option>
-      </select>
-    </div>
-
   </div>
 
   <script>
-    // Avatar (Logo) upload + delete
-    (function(){
-      const input = document.getElementById('avatarInput');
-      const preview = document.getElementById('avatarPreview');
-      const deleteBtn = document.getElementById('deleteAvatar');
-
-      input.addEventListener('change', event => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = e => { preview.src = e.target.result; };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      deleteBtn.addEventListener('click', () => {
-        preview.src = "https://via.placeholder.com/120";
-        input.value = "";
-      });
-    })();
-
-    // MuscleCoin state
     const coinCounterEl = document.getElementById('coinCounter');
     let coins = Number(localStorage.getItem('fitkid_coins') || 0);
-    function updateCoinDisplay(){ coinCounterEl.textContent = `MuscleCoin: ${coins}`; localStorage.setItem('fitkid_coins', coins); }
+    function updateCoinDisplay(){
+      coinCounterEl.textContent = `MuscleCoin: ${coins}`;
+      localStorage.setItem('fitkid_coins', coins);
+    }
     updateCoinDisplay();
 
-    // Misiones: completar y actualizar barras
+    // Misiones
     (function(){
       const missionCards = document.querySelectorAll('.mission-card');
       missionCards.forEach(card => {
         const btn = card.querySelector('.complete-btn');
         const progressInner = card.querySelector('.progress-inner');
         const reward = Number(card.dataset.reward || 0);
-        // initialize progress from data attribute
         let progress = Number(card.dataset.progress || 0);
         progressInner.style.width = progress + '%';
 
         btn.addEventListener('click', () => {
-          // increment progress by 25% for demo purposes (you can change logic)
           progress = Math.min(100, progress + 25);
           progressInner.style.width = progress + '%';
           card.dataset.progress = progress;
 
-          // If completed, award coins and disable button
           if (progress >= 100) {
             coins += reward;
             updateCoinDisplay();
@@ -188,39 +170,29 @@
       });
     })();
 
-    // Sistema real de cambio de ropa con imágenes superpuestas
+    // Cambio de ropa
     (function(){
       const clothesSelect = document.getElementById('clothesSelect');
       const tshirt = document.getElementById('clothes_tshirt');
       const jacket = document.getElementById('clothes_jacket');
       const cape = document.getElementById('clothes_cape');
 
-      function hideAllClothes(){ tshirt.style.display='none'; jacket.style.display='none'; cape.style.display='none'; }
+      function hideAll(){
+        tshirt.style.display='none';
+        jacket.style.display='none';
+        cape.style.display='none';
+      }
 
       clothesSelect.addEventListener('change', () => {
-        const val = clothesSelect.value;
-        hideAllClothes();
-        if(val === 'tshirt') tshirt.style.display = 'block';
-        if(val === 'jacket') jacket.style.display = 'block';
-        if(val === 'cape') cape.style.display = 'block';
+        hideAll();
+        if(clothesSelect.value === 'tshirt') tshirt.style.display='block';
+        if(clothesSelect.value === 'jacket') jacket.style.display='block';
+        if(clothesSelect.value === 'cape') cape.style.display='block';
       });
 
-      hideAllClothes();
+      hideAll();
     })();
-
-    // pequeña animación al cambiar ropa (rebote)
-    (function(){
-      const petImg = document.getElementById('petImg');
-      const clothesSelect = document.getElementById('clothesSelect');
-      clothesSelect.addEventListener('change', () => {
-        petImg.animate([
-          { transform: 'translateY(0px)' },
-          { transform: 'translateY(-8px)' },
-          { transform: 'translateY(0px)' }
-        ], { duration: 350, easing: 'ease-out' });
-      });
-    })();
-
   </script>
+
 </body>
 </html>
