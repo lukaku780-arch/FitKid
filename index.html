@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitKid</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', Arial, sans-serif;
+      background: #ffe8a3;
+    }
+    header {
+      background: #ff9f1c;
+      padding: 20px;
+      color: white;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      position: relative;
+    }
+    .coin-counter{
+      position: absolute;
+      right: 20px;
+      top: 18px;
+      background: #fff7d1;
+      color: #ff6f59;
+      padding: 6px 10px;
+      border-radius: 12px;
+      font-weight: bold;
+      border: 2px solid #ffd36b;
+    }
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff7d1;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      border: 3px solid #ffd36b;
+    }
+    button {
+      background: #ff6f59;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    button:hover { background:#ff856f }
+
+    .mission-card { margin-bottom: 12px; }
+    .progress-outer { background:#ffe6a7;height:16px;border-radius:10px;overflow:hidden;margin:8px 0; }
+    .progress-inner { height:100%; background:#ff9f1c; width:0%; }
+
+    #petContainer{ width:240px; height:260px; position:relative; }
+    #petContainer img{ position:absolute; top:0; left:0; width:240px; height:260px; object-fit:cover; border-radius:20px }
+
+    select { padding:8px 10px; border-radius:10px; border:2px solid #ffd36b; }
+    label { display:block; margin-top:8px; margin-bottom:6px; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <header>
+    FitKid
+    <div class="coin-counter" id="coinCounter">MuscleCoin: 0</div>
+  </header>
+
+  <div class="container">
+    <!-- Logo / Avatar -->
+    <div class="card">
+      <h2>Logo de la Aplicación</h2>
+      <img id="avatarPreview" src="https://via.placeholder.com/120" alt="Logo" style="width:120px;height:120px;border-radius:16px;display:block;margin-bottom:10px;" />
+      <input type="file" id="avatarInput" accept="image/*" />
+      <button id="deleteAvatar">Eliminar avatar</button>
+    </div>
+
+    <!-- Misiones -->
+    <div class="card">
+      <h2>Misiones</h2>
+
+      <div class="mission-card" data-reward="5" data-progress="20">
+        <h3>🏃‍♂️ Camina 2 km</h3>
+        <div class="progress-outer"><div class="progress-inner" style="width:20%"></div></div>
+        <p style="font-weight:bold;">Recompensa: 5💰 MuscleCoin</p>
+        <button class="complete-btn">Completar</button>
+      </div>
+
+      <div class="mission-card" data-reward="8" data-progress="0">
+        <h3>⏱️ Ejercita 10 minutos</h3>
+        <div class="progress-outer"><div class="progress-inner" style="width:0%"></div></div>
+        <p style="font-weight:bold;">Recompensa: 8💰 MuscleCoin</p>
+        <button class="complete-btn">Completar</button>
+      </div>
+
+      <div class="mission-card" data-reward="10" data-progress="50">
+        <h3>💪 Haz 10 flexiones</h3>
+        <div class="progress-outer"><div class="progress-inner" style="width:50%"></div></div>
+        <p style="font-weight:bold;">Recompensa: 10💰 MuscleCoin</p>
+        <button class="complete-btn">Completar</button>
+      </div>
+
+    </div>
+
+    <!-- Mascota Virtual -->
+    <div class="card">
+      <h2>Mascota Virtual</h2>
+      <div id="petContainer">
+        <img id="petImg" src="./assets/pet.png" alt="Mascota" />
+        <!-- capas de ropa -->
+        <img id="clothes_tshirt" src="./assets/clothes_tshirt.png" style="display:none" alt="Polera" />
+        <img id="clothes_jacket" src="./assets/clothes_jacket.png" style="display:none" alt="Chaqueta" />
+        <img id="clothes_cape" src="./assets/clothes_cape.png" style="display:none" alt="Capa" />
+      </div>
+
+      <label for="clothesSelect">Elige vestimenta:</label>
+      <select id="clothesSelect">
+        <option value="">Sin ropa</option>
+        <option value="tshirt">Polera</option>
+        <option value="jacket">Chaqueta</option>
+        <option value="cape">Capa</option>
+      </select>
+    </div>
+
+  </div>
+
+  <script>
+    // Avatar (Logo) upload + delete
+    (function(){
+      const input = document.getElementById('avatarInput');
+      const preview = document.getElementById('avatarPreview');
+      const deleteBtn = document.getElementById('deleteAvatar');
+
+      input.addEventListener('change', event => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = e => { preview.src = e.target.result; };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      deleteBtn.addEventListener('click', () => {
+        preview.src = "https://via.placeholder.com/120";
+        input.value = "";
+      });
+    })();
+
+    // MuscleCoin state
+    const coinCounterEl = document.getElementById('coinCounter');
+    let coins = Number(localStorage.getItem('fitkid_coins') || 0);
+    function updateCoinDisplay(){ coinCounterEl.textContent = `MuscleCoin: ${coins}`; localStorage.setItem('fitkid_coins', coins); }
+    updateCoinDisplay();
+
+    // Misiones: completar y actualizar barras
+    (function(){
+      const missionCards = document.querySelectorAll('.mission-card');
+      missionCards.forEach(card => {
+        const btn = card.querySelector('.complete-btn');
+        const progressInner = card.querySelector('.progress-inner');
+        const reward = Number(card.dataset.reward || 0);
+        // initialize progress from data attribute
+        let progress = Number(card.dataset.progress || 0);
+        progressInner.style.width = progress + '%';
+
+        btn.addEventListener('click', () => {
+          // increment progress by 25% for demo purposes (you can change logic)
+          progress = Math.min(100, progress + 25);
+          progressInner.style.width = progress + '%';
+          card.dataset.progress = progress;
+
+          // If completed, award coins and disable button
+          if (progress >= 100) {
+            coins += reward;
+            updateCoinDisplay();
+            btn.disabled = true;
+            btn.textContent = 'Completada';
+            btn.style.opacity = 0.8;
+          }
+        });
+      });
+    })();
+
+    // Sistema real de cambio de ropa con imágenes superpuestas
+    (function(){
+      const clothesSelect = document.getElementById('clothesSelect');
+      const tshirt = document.getElementById('clothes_tshirt');
+      const jacket = document.getElementById('clothes_jacket');
+      const cape = document.getElementById('clothes_cape');
+
+      function hideAllClothes(){ tshirt.style.display='none'; jacket.style.display='none'; cape.style.display='none'; }
+
+      clothesSelect.addEventListener('change', () => {
+        const val = clothesSelect.value;
+        hideAllClothes();
+        if(val === 'tshirt') tshirt.style.display = 'block';
+        if(val === 'jacket') jacket.style.display = 'block';
+        if(val === 'cape') cape.style.display = 'block';
+      });
+
+      hideAllClothes();
+    })();
+
+    // pequeña animación al cambiar ropa (rebote)
+    (function(){
+      const petImg = document.getElementById('petImg');
+      const clothesSelect = document.getElementById('clothesSelect');
+      clothesSelect.addEventListener('change', () => {
+        petImg.animate([
+          { transform: 'translateY(0px)' },
+          { transform: 'translateY(-8px)' },
+          { transform: 'translateY(0px)' }
+        ], { duration: 350, easing: 'ease-out' });
+      });
+    })();
+
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>FitKid</title>
+</head>
+<body>
+Proyecto preparado. Reemplaza este archivo con el contenido del canvas.
+</body>
+</html>
