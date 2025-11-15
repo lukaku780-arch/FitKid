@@ -1,198 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FitKid</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Comic Sans MS', Arial, sans-serif;
-      background: #ffe8a3;
-    }
-    header {
-      background: #ff9f1c;
-      padding: 20px;
-      color: white;
-      text-align: center;
-      font-size: 2rem;
-      font-weight: bold;
-      letter-spacing: 2px;
-      position: relative;
-    }
-    .logo-fixed {
-      position: absolute;
-      left: 20px;
-      top: 10px;
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      object-fit: cover;
-      border: 2px solid white;
-    }
-    .coin-counter{
-      position: absolute;
-      right: 20px;
-      top: 18px;
-      background: #fff7d1;
-      color: #ff6f59;
-      padding: 6px 10px;
-      border-radius: 12px;
-      font-weight: bold;
-      border: 2px solid #ffd36b;
-    }
-    .container {
-      padding: 20px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .card {
-      background: #fff7d1;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      border: 3px solid #ffd36b;
-    }
-    button {
-      background: #ff6f59;
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
-    }
-    button:hover { background:#ff856f }
-
-    .mission-card { margin-bottom: 12px; }
-    .progress-outer { background:#ffe6a7;height:16px;border-radius:10px;overflow:hidden;margin:8px 0; }
-    .progress-inner { height:100%; background:#ff9f1c; width:0%; }
-
-    #petContainer{ width:240px; height:260px; position:relative; }
-    #petContainer img{ position:absolute; top:0; left:0; width:240px; height:260px; object-fit:cover; border-radius:20px }
-
-    select { padding:8px 10px; border-radius:10px; border:2px solid #ffd36b; }
-    label { display:block; margin-top:8px; margin-bottom:6px; font-weight:bold; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitKid</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <img src="./assets/logo.png" class="logo-fixed" alt="Logo">
-    FitKid
-    <div class="coin-counter" id="coinCounter">MuscleCoin: 0</div>
-  </header>
+    <!-- Logo fijo de la aplicación -->
+    <header class="app-header">
+        <img src="assets/logo.png" alt="Logo FitKid" class="logo">
+        <h1>FitKid</h1>
+    </header>
 
-  <div class="container">
-
-    <!-- Mascota Virtual -->
-    <div class="card">
-      <h2>Mascota Virtual</h2>
-      <div id="petContainer">
-        <img id="petImg" src="./assets/pet.png" alt="Mascota" />
-        <img id="clothes_tshirt" src="./assets/clothes_tshirt.png" style="display:none" alt="Polera" />
-        <img id="clothes_jacket" src="./assets/clothes_jacket.png" style="display:none" alt="Chaqueta" />
-        <img id="clothes_cape" src="./assets/clothes_cape.png" style="display:none" alt="Capa" />
-      </div>
-
-      <label for="clothesSelect">Elige vestimenta:</label>
-      <select id="clothesSelect">
-        <option value="">Sin ropa</option>
-        <option value="tshirt">Polera</option>
-        <option value="jacket">Chaqueta</option>
-        <option value="cape">Capa</option>
-      </select>
+    <!-- Mascota en el centro -->
+    <div class="mascota-container">
+        <img id="mascota" src="assets/mascota.png" alt="Mascota">
+        <img id="ropa" class="ropa" src="assets/ropa1.png" alt="Ropa actual">
     </div>
 
-    <!-- Misiones -->
-    <div class="card">
-      <h2>Misiones</h2>
-
-      <div class="mission-card" data-reward="5" data-progress="20">
-        <h3>🏃‍♂️ Camina 2 km</h3>
-        <div class="progress-outer"><div class="progress-inner" style="width:20%"></div></div>
-        <p style="font-weight:bold;">Recompensa: 5💰 MuscleCoin</p>
-        <button class="complete-btn">Completar</button>
-      </div>
-
-      <div class="mission-card" data-reward="8" data-progress="0">
-        <h3>⏱️ Ejercita 10 minutos</h3>
-        <div class="progress-outer"><div class="progress-inner" style="width:0%"></div></div>
-        <p style="font-weight:bold;">Recompensa: 8💰 MuscleCoin</p>
-        <button class="complete-btn">Completar</button>
-      </div>
-
-      <div class="mission-card" data-reward="10" data-progress="50">
-        <h3>💪 Haz 10 flexiones</h3>
-        <div class="progress-outer"><div class="progress-inner" style="width:50%"></div></div>
-        <p style="font-weight:bold;">Recompensa: 10💰 MuscleCoin</p>
-        <button class="complete-btn">Completar</button>
-      </div>
-
+    <!-- Selector de ropa -->
+    <div class="selector-ropa">
+        <label for="selectRopa">Cambiar ropa:</label>
+        <select id="selectRopa">
+            <option value="ropa1.png">Ropa 1</option>
+            <option value="ropa2.png">Ropa 2</option>
+            <option value="ropa3.png">Ropa 3</option>
+        </select>
     </div>
 
-  </div>
-
-  <script>
-    const coinCounterEl = document.getElementById('coinCounter');
-    let coins = Number(localStorage.getItem('fitkid_coins') || 0);
-    function updateCoinDisplay(){
-      coinCounterEl.textContent = `MuscleCoin: ${coins}`;
-      localStorage.setItem('fitkid_coins', coins);
-    }
-    updateCoinDisplay();
-
-    // Misiones
-    (function(){
-      const missionCards = document.querySelectorAll('.mission-card');
-      missionCards.forEach(card => {
-        const btn = card.querySelector('.complete-btn');
-        const progressInner = card.querySelector('.progress-inner');
-        const reward = Number(card.dataset.reward || 0);
-        let progress = Number(card.dataset.progress || 0);
-        progressInner.style.width = progress + '%';
-
-        btn.addEventListener('click', () => {
-          progress = Math.min(100, progress + 25);
-          progressInner.style.width = progress + '%';
-          card.dataset.progress = progress;
-
-          if (progress >= 100) {
-            coins += reward;
-            updateCoinDisplay();
-            btn.disabled = true;
-            btn.textContent = 'Completada';
-            btn.style.opacity = 0.8;
-          }
-        });
-      });
-    })();
-
-    // Cambio de ropa
-    (function(){
-      const clothesSelect = document.getElementById('clothesSelect');
-      const tshirt = document.getElementById('clothes_tshirt');
-      const jacket = document.getElementById('clothes_jacket');
-      const cape = document.getElementById('clothes_cape');
-
-      function hideAll(){
-        tshirt.style.display='none';
-        jacket.style.display='none';
-        cape.style.display='none';
-      }
-
-      clothesSelect.addEventListener('change', () => {
-        hideAll();
-        if(clothesSelect.value === 'tshirt') tshirt.style.display='block';
-        if(clothesSelect.value === 'jacket') jacket.style.display='block';
-        if(clothesSelect.value === 'cape') cape.style.display='block';
-      });
-
-      hideAll();
-    })();
-  </script>
-
+<script src="script.js"></script>
 </body>
 </html>
